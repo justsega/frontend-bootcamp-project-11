@@ -1,11 +1,12 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
-import { path } from 'path';
-import { HtmlWebpackPlugin } from 'html-webpack-plugin';
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import WorkboxWebpackPlugin from 'workbox-webpack-plugin';
 
-const isProduction = process.env.NODE_ENV == 'production';
 
+const isProduction = process.env.NODE_ENV == 'production';
+const __dirname = '/';
 const config = {
   entry: './src/index.js',
   output: {
