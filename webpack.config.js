@@ -6,11 +6,11 @@ import WorkboxWebpackPlugin from 'workbox-webpack-plugin';
 
 
 const isProduction = process.env.NODE_ENV == 'production';
-const __dirname = '/';
+
 const config = {
   entry: './src/index.js',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve('dist'),
   },
   devServer: {
     open: true,
