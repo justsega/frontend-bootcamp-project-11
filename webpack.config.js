@@ -1,32 +1,7 @@
-// Generated using webpack-cli https://github.com/webpack/webpack-cli
-
-import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import WorkboxWebpackPlugin from 'workbox-webpack-plugin';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const isProduction = process.env.NODE_ENV == 'production';
-
-const config = {
-  entry: './src/index.js',
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-  },
-  devServer: {
-    open: true,
-    host: 'localhost',
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: 'index.html',
-    }),
-
-    // Add your plugins here
-    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
-  ],
+export default {
+  mode: process.env.NODE_ENV || 'development',
   module: {
     rules: [
       {
@@ -54,15 +29,12 @@ const config = {
       },
     ],
   },
-};
-
-module.exports = () => {
-  if (isProduction) {
-    config.mode = 'production';
-
-    config.plugins.push(new WorkboxWebpackPlugin.GenerateSW());
-  } else {
-    config.mode = 'development';
-  }
-  return config;
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'index.html',
+    }),
+  ],
+  output: {
+    clean: true,
+  },
 };
