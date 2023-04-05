@@ -30,8 +30,6 @@ export const renderSearchingProcess = (value) => {
 }
 
 export const renderFeeds = (value) => {
-    console.log(value)
-
     const feedsBlock = document.querySelector('.feeds');
     feedsBlock.innerHTML = '';
 
@@ -49,8 +47,6 @@ export const renderFeeds = (value) => {
     feedsCard.append(cardBody);
     feedsBlock.prepend(feedsCard);
 
-    
-    
     value.forEach((feed) => {
         const li = document.createElement('li');
         li.classList.add('list-group-item', 'border-0', 'border-end-0');
@@ -66,13 +62,9 @@ export const renderFeeds = (value) => {
         const ul = document.createElement('ul');
         ul.classList.add('list-group', 'border-0', 'rounded-0');
 
-        li.append(h3);
-        li.append(p);
+        li.append(h3, p);
         ul.append(li);
         feedsCard.append(ul);
-
-    
-        
     })
 }
 
