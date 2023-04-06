@@ -1,7 +1,5 @@
 
 
-export const generateUniqId = () => uniqid();
-
 export const rssParser = (response) => {
     const domParser = new DOMParser();
 
@@ -30,14 +28,15 @@ export const feedParser = (document) => {
 }
 
 export const postsParser = (document) => { 
-  
+    const feedName = document.querySelector('channel title').textContent;
     const topics = [...document.querySelectorAll('item')];
     const topicsList = topics.map((topic) => {
+    
         const title = topic.querySelector('title').textContent;
         const link = topic.querySelector('link').textContent;
         const description = topic.querySelector('description').textContent;
         return {
-            title: title, description: description, link: link, read: 'false'
+             feedName: feedName, title: title, description: description, link: link,
         }
     })
     

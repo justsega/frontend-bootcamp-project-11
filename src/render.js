@@ -1,3 +1,5 @@
+
+
 export const renderSuccess = () => {
     const inputField = document.querySelector('#url-input');
     inputField.classList.remove('is-invalid');
@@ -120,14 +122,19 @@ export const renderPostsContainer = () => {
 }
 
 export const renderTopics = (value) => {
-    
     const ul = document.querySelector('.posts ul');
+    ul.innerHTML = ''
     value.forEach((topic) => {
+        const feedName = topic.feedName;
+        const id = topic.id;
         const title = topic.title;
         const link = topic.link;
 
         const li = document.createElement('li');
         li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+
+        li.setAttribute('id', id);
+        li.setAttribute('feedName', feedName);
         
         const a = document.createElement('a');
         a.classList.add('fw-bold');
@@ -149,8 +156,6 @@ export const renderTopics = (value) => {
         li.append(a);
         li.append(button);
         ul.append(li);
-        
-         
     })    
 }
 

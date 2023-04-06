@@ -32,7 +32,8 @@ export default (state) => onChange(state, (path, value) => {
             break;
     // Show content in modal window
         case 'currentPost':
-            renderModalWindowContent(value);
+            console.log('catched')
+            //renderModalWindowContent(value);
             break;
     // Show opened posts flag
         case 'openedPosts':
