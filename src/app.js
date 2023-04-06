@@ -1,5 +1,5 @@
 import validate from './validation.js';
-import { rssParser, feedParser, postsParser } from './rssReader.js';
+import { rssParser } from './rssReader.js';
 import axios from 'axios';
 import watcher from './view.js';
 import _ from 'lodash';
@@ -11,6 +11,38 @@ const inputField = document.querySelector('#url-input');
 const btn = document.querySelector('[aria-label="add"]');
 //const topicsContainer = document.querySelector('.posts');
 
+const feedParser = (document) => {
+
+    if (document === null) {
+        const error = new Error('ERRor in feedParsing');
+        error.name = 'ParsingError';
+        throw error;
+    }
+    const feedTitle = document.querySelector('channel title').textContent;
+    const feedDescription = document.querySelector('channel description').textContent;
+
+    return { feedTitle: feedTitle, feedDescription: feedDescription };
+}
+
+const postsParser = (document) => { 
+    
+    const feedName = document.querySelector('title').textContent;
+    const topics = [...document.querySelectorAll('item')];
+    const topicsList = topics.map((topic) => {
+        
+        const title = topic.querySelector('title').textContent;
+        
+        const link = topic.querySelector('link').textContent;
+        
+        const description = topic.querySelector('description').textContent;
+        
+        return {
+             feedName: feedName, title: title, description: description, link: link,
+        }
+    })
+    
+    return topicsList;
+}
 const setId = (list) => {
     list.forEach((l) => l.id = uniqid());
     return list;
@@ -30,10 +62,11 @@ const urlValidation = (watchedState) => {
                 
 }
 
-const getResponse = (url) => {
+const getResponse = (url, watchedState) => {
     return axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${url}`)
                 .then((response) => {
                     if (response.data.status.http_code === 404) {
+                        watchedState.formInput.urlList.pop();
                         const e = new Error();
                         e.name = 'InvalidRssError';
                         throw e;
@@ -47,7 +80,7 @@ const addFeed = (watchedState) => {
     watchedState.searchingProcess = true;
     refreshState(watchedState);
     urlValidation(watchedState)
-        .then(url => getResponse(url))
+        .then(url => getResponse(url, watchedState))
         .then(response => {
             const document = rssParser(response);
             const feed = feedParser(document);
@@ -70,9 +103,10 @@ const addFeed = (watchedState) => {
 }
 
 const updateRss = (watchedState) => {
+   
     const promisies = watchedState.formInput.urlList.map((url) => {
         
-        const promise =  getResponse(url)
+        const promise =  getResponse(url, watchedState)
         .then(response => rssParser(response))             
         .catch(err => errorHandler(err, watchedState))
         return promise;
@@ -98,6 +132,7 @@ const updateRss = (watchedState) => {
             }
             showModalWindow(watchedState);
             markLinks(watchedState);
+
         }))
         .catch(err => errorHandler(err, watchedState));
      setTimeout(() => updateRss(watchedState), 5000);
@@ -145,7 +180,11 @@ const showModalWindow = (watchedState) => {
             const parentNode = e.target.closest('li');
             const id = parentNode.id;
             watchedState.currentPost = watchedState.topics.find(t => t.id === id);
+            if (watchedState.openedPosts.includes(id)) {
+                return;
+            }
             watchedState.openedPosts.push(id);
+            console.log(watchedState.openedPosts);
             
         })
     })
@@ -159,6 +198,9 @@ const markLinks = (watchedState) => {
         ref.addEventListener('click', (e) => {
             const parentNode = e.target.closest('li');
             const id = parentNode.id;
+            if (watchedState.openedPosts.includes(id)) {
+                return;
+            }
             watchedState.openedPosts.push(id);
             
         })

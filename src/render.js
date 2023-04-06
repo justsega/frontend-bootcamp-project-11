@@ -20,16 +20,15 @@ export const renderError = (value) => {
 }
 
 export const renderSearchingProcess = (value) => {
-    const form = document.querySelector('form');
-  
+    const inputField = document.querySelector('#url-input');
     const btn = document.querySelector('[aria-label="add"]');
     if (!value) {
-        btn.removeAttribute('disabled', '');
-        form.removeAttribute('readonly', 'true')
+        btn.removeAttribute('disabled');
+        inputField.removeAttribute('readonly')
         return;
     }
     btn.setAttribute('disabled', '');
-    form.setAttribute('readonly', 'true')
+    inputField.setAttribute('readonly', 'true')
 }
 
 export const renderFeeds = (value) => {
