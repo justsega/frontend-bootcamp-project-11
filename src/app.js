@@ -2,53 +2,26 @@ import validate from './validation.js';
 import { rssParser, feedParser, postsParser } from './rssReader.js';
 import axios from 'axios';
 import watcher from './view.js';
-import { map } from 'async';
 import _ from 'lodash';
 import uniqid from 'uniqid';
-
-
-
-export default () => {
-    
-}; 
-
-
+import  i18next  from 'i18next';
+import {map} from 'async';
 
 const form = document.querySelector('form');
 const inputField = document.querySelector('#url-input');
 const btn = document.querySelector('[aria-label="add"]');
-const test = document.querySelector('.feeds');
 const topicsContainer = document.querySelector('.posts');
 
-test.addEventListener('click', () => {
-    updateRss(watchedState);
-})
+const refreshState = (watchedState) => {
+    watchedState.error = null;
+    watchedState.success = false;
+    watchedState.searchingProcess = true;
+}
 
-btn.addEventListener('click', (e) => {
-    e.preventDefault();
-    watchedState.formInput.url = inputField.value;
-    form.reset();
-    inputField.focus();
-    addFeed(watchedState);
-    
-});
-
-
-topicsContainer.addEventListener('click', (e) => {
-    const patentNode = e.target.closest('li');
-    const a = patentNode.querySelector('a');
-    const openedTopic = (watchedState.topics.filter(topic => topic.link === a.getAttribute('href')));
-    watchedState.currentPost = openedTopic;
-    watchedState.openedPosts.push(...openedTopic);
-    
-    
-});
-
-
-const urlValidation = (state) => {
-    return validate(state.formInput.url, state.formInput.urlList)
+const urlValidation = (watchedState) => {
+    return validate(watchedState.formInput.url, watchedState.formInput.urlList)
                 .then(url => {
-                    state.formInput.urlList.push(url);
+                    watchedState.formInput.urlList.push(url);
                     return url;
                 })
                 
@@ -67,19 +40,11 @@ const getResponse = (url) => {
             
 }
 
-const refreshState = (watchedState) => {
-    watchedState.error = null;
-    watchedState.success = false;
-    watchedState.searchingProcess = true;
-}
-
-
-
 const updateRss = (watchedState) => {
     const promisies = watchedState.formInput.urlList.map((url) => {
         const promise =  getResponse(url)
         .then(response => rssParser(response))             
-        .catch(err => errorHandler(err))
+        .catch(err => errorHandler(err, watchedState))
         return promise;
     })
     Promise
@@ -92,13 +57,11 @@ const updateRss = (watchedState) => {
             if (diffArr.length === 0) {
                 return;
             }
-            console.log(diffArr)
-            
             return diffArr;
         })
         .then((diffArr) => watchedState.topics.unshift(...diffArr.flat()))
-        .catch(err => errorHandler(err));
-   //   setTimeout(() => updateRss(watchedState), 5000);
+        .catch(err => errorHandler(err, watchedState));
+      setTimeout(() => updateRss(watchedState), 5000);
   
 }
 
@@ -120,18 +83,18 @@ const addFeed = (watchedState) => {
         })
         .then(() => updateRss(watchedState))
         .catch(err => {
-            errorHandler(err);
+            errorHandler(err, watchedState);
             watchedState.searchingProcess = false;
         });
 }
 
-const errorHandler = (err) => {
+const errorHandler = (err, watchedState) => {
         switch (err.name) {
             case 'AxiosError':
                 watchedState.error = 'Ошибка соединения с сервером';
                 break;
             case 'ValidationError':
-                console.log(err.message)
+                
                 if (err.message.includes('not be one of')) {
                     watchedState.error = 'RSS уже существует';
                     break;
@@ -149,30 +112,56 @@ const errorHandler = (err) => {
                 watchedState.error = 'Ресурс не содержит валидный RSS';
                 break;
             default:
-                console.log(err.name);
-                console.log(err.message);
                 watchedState.error = 'Что-то пошло не так =(';
                 
                 break;
         }
 }
 
-const state = {
-    formInput: {
-        url: null,
-        urlList: [],
+export default () => {
+    const i18n = i18next.createInstance();
+    i18n.init({
+      lng: 'ru',
+      debug: true,
+      //resources: languages.ru,
+    });
 
-    },
-    success: false,
-    currentPost: null,
-    openedPosts: [],
-    searchingProcess: false,
-    feedsList: [],
-    topics: [],
-    error: null,
+    const state = {
+        formInput: {
+            url: null,
+            urlList: [],
+    
+        },
+        success: false,
+        currentPost: null,
+        openedPosts: [],
+        searchingProcess: false,
+        feedsList: [],
+        topics: [],
+        error: null,
+    }
+
+    const watchedState = watcher(state);
+    
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        watchedState.formInput.url = inputField.value;
+        form.reset();
+        inputField.focus();
+        addFeed(watchedState);
+        
+    });
+
+    topicsContainer.addEventListener('click', (e) => {
+        const patentNode = e.target.closest('li');
+        const a = patentNode.querySelector('a');
+        const openedTopic = (watchedState.topics.filter(topic => topic.link === a.getAttribute('href')));
+        watchedState.currentPost = openedTopic;
+        watchedState.openedPosts.push(...openedTopic);
+        
+        
+    });
 }
-
-const watchedState = watcher(state);
 
 
 

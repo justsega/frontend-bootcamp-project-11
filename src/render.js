@@ -122,8 +122,6 @@ export const renderPostsContainer = () => {
 export const renderTopics = (value) => {
     
     const ul = document.querySelector('.posts ul');
-    console.log(ul)
-    console.log('-------------------');
     value.forEach((topic) => {
         const title = topic.title;
         const link = topic.link;
