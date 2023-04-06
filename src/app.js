@@ -4,18 +4,21 @@ import axios from 'axios';
 import watcher from './view.js';
 import _ from 'lodash';
 import  i18next  from 'i18next';
-import {log, map} from 'async';
 import uniqid from 'uniqid';
 
 const form = document.querySelector('form');
 const inputField = document.querySelector('#url-input');
 const btn = document.querySelector('[aria-label="add"]');
-const topicsContainer = document.querySelector('.posts');
+//const topicsContainer = document.querySelector('.posts');
+
+const setId = (list) => {
+    list.forEach((l) => l.id = uniqid());
+    return list;
+}
 
 const refreshState = (watchedState) => {
     watchedState.error = null;
     watchedState.success = false;
-    watchedState.searchingProcess = true;
 }
 
 const urlValidation = (watchedState) => {
@@ -40,9 +43,30 @@ const getResponse = (url) => {
             
 }
 
-const setId = (list) => {
-    list.forEach((l) => l.id = uniqid());
-    return list;
+const addFeed = (watchedState) => {
+    watchedState.searchingProcess = true;
+    refreshState(watchedState);
+    urlValidation(watchedState)
+        .then(url => getResponse(url))
+        .then(response => {
+            const document = rssParser(response);
+            const feed = feedParser(document);
+            const posts = postsParser(document)   
+            setId(posts);
+            watchedState.topics.unshift(...posts);
+            watchedState.feedsList.unshift(feed);
+            watchedState.success = true;
+            watchedState.searchingProcess = false;
+            showModalWindow(watchedState);
+            markLinks(watchedState);
+            shownFeed(watchedState);
+            updateRss(watchedState);
+            
+        })
+        .catch(err => {
+            errorHandler(err, watchedState);
+            watchedState.searchingProcess = false;
+        });
 }
 
 const updateRss = (watchedState) => {
@@ -70,30 +94,17 @@ const updateRss = (watchedState) => {
                 });
                 const newTopicsWithId = setId(newTopics);
                 watchedState.topics.unshift(...newTopicsWithId.flat())
+                
             }
+            showModalWindow(watchedState);
+            markLinks(watchedState);
         }))
         .catch(err => errorHandler(err, watchedState));
      setTimeout(() => updateRss(watchedState), 5000);
   
 }
 
-const addFeed = (watchedState) => {
-    refreshState(watchedState);
-    urlValidation(watchedState)
-        .then(url => getResponse(url))
-        .then(response => {
-            const document = rssParser(response);
-            const feed = feedParser(document);
-            watchedState.feedsList.unshift(feed);
-            watchedState.success = true;
-            watchedState.searchingProcess = false;
-            updateRss(watchedState)
-        })
-        .catch(err => {
-            errorHandler(err, watchedState);
-            watchedState.searchingProcess = false;
-        });
-}
+
 
 const errorHandler = (err, watchedState) => {
         switch (err.name) {
@@ -126,6 +137,59 @@ const errorHandler = (err, watchedState) => {
         }
 }
 
+const showModalWindow = (watchedState) => {
+    const topicsContainer = document.querySelector('.posts');
+    const buttons = topicsContainer.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const parentNode = e.target.closest('li');
+            const id = parentNode.id;
+            watchedState.currentPost = watchedState.topics.find(t => t.id === id);
+            watchedState.openedPosts.push(id);
+            
+        })
+    })
+    markLinks(watchedState);
+}
+
+const markLinks = (watchedState) => {
+    const topicsContainer = document.querySelector('.posts');
+    const hrefs = topicsContainer.querySelectorAll('a');
+    hrefs.forEach((ref) => {
+        ref.addEventListener('click', (e) => {
+            const parentNode = e.target.closest('li');
+            const id = parentNode.id;
+            watchedState.openedPosts.push(id);
+            
+        })
+    })
+  
+}
+
+const shownFeed = (watchedState) => {
+    const feedsContainer = document.querySelector('.feeds');
+    const allFeeds = feedsContainer.querySelector('h2');
+    const feeds = feedsContainer.querySelectorAll('li');
+    feeds.forEach((feed) => {
+        feed.addEventListener('click', (e) => {
+            const parentNode = e.target.closest('li')
+            const feedTitle = parentNode.querySelector('h3').textContent;
+            console.log(feedTitle)
+            watchedState.shownFeed = feedTitle;
+            showModalWindow(watchedState);
+            markLinks(watchedState);
+        })
+    })
+    allFeeds.addEventListener('click', () => {
+        watchedState.shownFeed = null;
+        showModalWindow(watchedState);
+        markLinks(watchedState);
+    })
+    
+}
+
+
+
 export default () => {
     const i18n = i18next.createInstance();
     i18n.init({
@@ -141,6 +205,7 @@ export default () => {
     
         },
         success: false,
+        shownFeed: null,
         currentPost: null,
         openedPosts: [],
         searchingProcess: false,
@@ -161,22 +226,8 @@ export default () => {
     });
 
 
-
-    topicsContainer.addEventListener('click', (e) => {
         
-        const buttons = topicsContainer.querySelectorAll('button');
-        buttons.forEach((button) => {
-            console.log('click done')
-            button.addEventListener('click', (e) => {
-                const parentNode = e.target.closest('li');
-                const id = parentNode.getAttribute('id');
-                console.log(id);
-                watchedState.currentPost = id;
-                watchedState.openedPosts.push(id);
-                console.log(watchedState.currentPost);
-            })
-        })
-    });
+    
 }
 
 

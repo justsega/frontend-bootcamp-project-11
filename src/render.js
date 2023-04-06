@@ -20,15 +20,16 @@ export const renderError = (value) => {
 }
 
 export const renderSearchingProcess = (value) => {
-    const inputField = document.querySelector('#url-input')
+    const form = document.querySelector('form');
+  
     const btn = document.querySelector('[aria-label="add"]');
     if (!value) {
         btn.removeAttribute('disabled', '');
-        inputField.removeAttribute('readonly', 'true')
+        form.removeAttribute('readonly', 'true')
         return;
     }
     btn.setAttribute('disabled', '');
-    inputField.setAttribute('readonly', 'true')
+    form.setAttribute('readonly', 'true')
 }
 
 export const renderFeeds = (value) => {
@@ -51,7 +52,8 @@ export const renderFeeds = (value) => {
 
     value.forEach((feed) => {
         const li = document.createElement('li');
-        li.classList.add('list-group-item', 'border-0', 'border-end-0');
+       //li.classList.add('list-group-item', 'border-0', 'border-end-0');
+        li.classList.add('list-group-item', 'border', 'border-primary', 'rounded-4')
 
         const h3 = document.createElement('h3');
         h3.classList.add('h6', 'm-0');
@@ -71,11 +73,9 @@ export const renderFeeds = (value) => {
 }
 
 export const renderModalWindowContent = (value) => {
-    const openedTopic = value;
-    const [topic] = openedTopic;
-    const title = topic.title;
-    const link = topic.link;
-    const description = topic.description;
+    const title = value.title;
+    const link = value.link;
+    const description = value.description;
 
     const modal = document.querySelector('#modal');
     const modalTitle = modal.querySelector('.modal-title');
@@ -89,12 +89,20 @@ export const renderModalWindowContent = (value) => {
 }
 
 export const renderViewedPosts = (value) => {
-    const postsContainer = document.querySelector('.posts');
-    value.forEach((post) => {
-        const a = postsContainer.querySelector(`[href="${post.link}"]`);
-        a.classList.remove('fw-bold');
-        a.classList.add('fw-normal', 'link-secondary');
-    })
+    if (value.length !== 0) {
+        value.forEach((id) => {
+            console.log(id)
+            const a = document.querySelector(`#${id} a`);
+            if (a === null) {
+                return;
+            }
+            console.log('TEST OF REF VALUE');
+            console.log(a);
+            a.classList.replace('fw-bold', 'fw-normal');
+            a.classList.add('link-secondary');
+        })
+    }
+    
     
 }
 
@@ -121,10 +129,15 @@ export const renderPostsContainer = () => {
     card.append(ul);
 }
 
-export const renderTopics = (value) => {
+export const renderTopics = (topics, filter = null) => {
+    if (filter !== null) {
+        topics = topics.filter((t) => t.feedName === filter);
+        console.log(topics)
+    }
     const ul = document.querySelector('.posts ul');
     ul.innerHTML = ''
-    value.forEach((topic) => {
+    topics.forEach((topic) => {
+        
         const feedName = topic.feedName;
         const id = topic.id;
         const title = topic.title;
@@ -156,7 +169,12 @@ export const renderTopics = (value) => {
         li.append(a);
         li.append(button);
         ul.append(li);
-    })    
+    })  
+
+}
+
+export const renderByFeedName = (value) => {
+
 }
 
 

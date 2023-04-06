@@ -27,17 +27,23 @@ export default (state) => onChange(state, (path, value) => {
     // Show Topics
         case 'topics':
             renderPostsContainer();
-            renderTopics(value);
+            renderTopics(value, state.shownFeed);
             renderViewedPosts(state.openedPosts)
             break;
     // Show content in modal window
         case 'currentPost':
-            console.log('catched')
-            //renderModalWindowContent(value);
+            console.log(value)
+            renderModalWindowContent(value);
             break;
     // Show opened posts flag
         case 'openedPosts':
             renderViewedPosts(value);
+            break;
+    // Filter topics by feed
+        case 'shownFeed':
+            renderPostsContainer();
+            renderTopics(state.topics, value);
+            renderViewedPosts(state.openedPosts)
             break;
         default:
             break;

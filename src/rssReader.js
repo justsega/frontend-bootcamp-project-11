@@ -17,7 +17,7 @@ export const rssParser = (response) => {
 export const feedParser = (document) => {
 
     if (document === null) {
-        const error = new Error();
+        const error = new Error('ERRor in feedParsing');
         error.name = 'ParsingError';
         throw error;
     }
@@ -28,6 +28,11 @@ export const feedParser = (document) => {
 }
 
 export const postsParser = (document) => { 
+    if (document === null) {
+        const error = new Error('ERRor in postsParsing');
+        error.name = 'ParsingError';
+        throw error;
+    }
     const feedName = document.querySelector('channel title').textContent;
     const topics = [...document.querySelectorAll('item')];
     const topicsList = topics.map((topic) => {
