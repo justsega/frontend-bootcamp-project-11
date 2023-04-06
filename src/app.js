@@ -3,9 +3,9 @@ import { rssParser, feedParser, postsParser } from './rssReader.js';
 import axios from 'axios';
 import watcher from './view.js';
 import _ from 'lodash';
-import uniqid from 'uniqid';
 import  i18next  from 'i18next';
-import {map} from 'async';
+import {log, map} from 'async';
+import uniqid from 'uniqid';
 
 const form = document.querySelector('form');
 const inputField = document.querySelector('#url-input');
@@ -40,8 +40,14 @@ const getResponse = (url) => {
             
 }
 
+const setId = (list) => {
+    list.forEach((l) => l.id = uniqid());
+    return list;
+}
+
 const updateRss = (watchedState) => {
     const promisies = watchedState.formInput.urlList.map((url) => {
+        
         const promise =  getResponse(url)
         .then(response => rssParser(response))             
         .catch(err => errorHandler(err, watchedState))
@@ -49,19 +55,25 @@ const updateRss = (watchedState) => {
     })
     Promise
         .all(promisies)
-        .then(parsedResponse => parsedResponse
-        .map((doc) => postsParser(doc)))
-        .then((feeds) => feeds
-        .map((feed) =>  _.differenceWith(feed, watchedState.topics, _.isEqual)))
-        .then(diffArr => {
-            if (diffArr.length === 0) {
+        .then(document => document.map((doc) => {
+            const posts = postsParser(doc);
+            const newPostsLinks = posts.map((p) => p.link);
+            const oldPostsLinks = watchedState.topics.map((p) => p.link);
+            const diffLinks = _.differenceWith(newPostsLinks, oldPostsLinks, _.isEqual);
+            if (diffLinks.length === 0) {
                 return;
+            } else {
+                const newTopics = diffLinks.map((l) => {
+                
+                    const p = posts.find((p) => p.link === l)
+                    return p;
+                });
+                const newTopicsWithId = setId(newTopics);
+                watchedState.topics.unshift(...newTopicsWithId.flat())
             }
-            return diffArr;
-        })
-        .then((diffArr) => watchedState.topics.unshift(...diffArr.flat()))
+        }))
         .catch(err => errorHandler(err, watchedState));
-      setTimeout(() => updateRss(watchedState), 5000);
+     setTimeout(() => updateRss(watchedState), 5000);
   
 }
 
@@ -69,19 +81,14 @@ const addFeed = (watchedState) => {
     refreshState(watchedState);
     urlValidation(watchedState)
         .then(url => getResponse(url))
-        .then(response => rssParser(response))
-        .then(document => feedParser(document))
-        .then(feed => {
-            watchedState.feedsList
-        .unshift(feed);
-        })
-        .then()
-        .then(() => {
+        .then(response => {
+            const document = rssParser(response);
+            const feed = feedParser(document);
+            watchedState.feedsList.unshift(feed);
             watchedState.success = true;
             watchedState.searchingProcess = false;
-            //updateRss(watchedState);
+            updateRss(watchedState)
         })
-        .then(() => updateRss(watchedState))
         .catch(err => {
             errorHandler(err, watchedState);
             watchedState.searchingProcess = false;
@@ -112,6 +119,7 @@ const errorHandler = (err, watchedState) => {
                 watchedState.error = 'Ресурс не содержит валидный RSS';
                 break;
             default:
+                console.log(err.message)
                 watchedState.error = 'Что-то пошло не так =(';
                 
                 break;
@@ -152,14 +160,22 @@ export default () => {
         
     });
 
+
+
     topicsContainer.addEventListener('click', (e) => {
-        const patentNode = e.target.closest('li');
-        const a = patentNode.querySelector('a');
-        const openedTopic = (watchedState.topics.filter(topic => topic.link === a.getAttribute('href')));
-        watchedState.currentPost = openedTopic;
-        watchedState.openedPosts.push(...openedTopic);
         
-        
+        const buttons = topicsContainer.querySelectorAll('button');
+        buttons.forEach((button) => {
+            console.log('click done')
+            button.addEventListener('click', (e) => {
+                const parentNode = e.target.closest('li');
+                const id = parentNode.getAttribute('id');
+                console.log(id);
+                watchedState.currentPost = id;
+                watchedState.openedPosts.push(id);
+                console.log(watchedState.currentPost);
+            })
+        })
     });
 }
 
