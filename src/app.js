@@ -54,8 +54,12 @@ const refreshState = (watchedState) => {
 }
 
 const urlValidation = (watchedState) => {
+    
+    
     return validate(watchedState.formInput.url, watchedState.formInput.urlList)
                 .then(url => {
+                    const p = document.querySelector('#ex2');
+                    p.textContent = url;
                     watchedState.formInput.urlList.push(url);
                     return url;
                 })
