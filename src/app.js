@@ -61,7 +61,7 @@ const urlValidation = (watchedState) => {
                 })
                 
 }
-
+/*
 const getResponse = (url, watchedState) => {
     return axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${url}`)
                 .then((response) => {
@@ -73,15 +73,21 @@ const getResponse = (url, watchedState) => {
                     }
                 return response;
                 });
-            
-}
+          
+} */ 
 
 const addFeed = (watchedState) => {
     watchedState.searchingProcess = true;
     refreshState(watchedState);
     urlValidation(watchedState)
-        .then(url => getResponse(url, watchedState))
+        .then(url => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${url}`))
         .then(response => {
+            if (response.data.status.http_code === 404) {
+                watchedState.formInput.urlList.pop();
+                const e = new Error();
+                e.name = 'InvalidRssError';
+                throw e;
+            }
             const document = rssParser(response);
             const feed = feedParser(document);
             const posts = postsParser(document)   
@@ -106,7 +112,7 @@ const updateRss = (watchedState) => {
    
     const promisies = watchedState.formInput.urlList.map((url) => {
         
-        const promise =  getResponse(url, watchedState)
+        const promise =  axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${url}`)
         .then(response => rssParser(response))             
         .catch(err => errorHandler(err, watchedState))
         return promise;
