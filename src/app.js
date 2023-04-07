@@ -130,7 +130,7 @@ const errorHandler = (err, watchedState, i18n) => {
       watchedState.error = i18n.t('axiosErrors.errorInvalidRss');
       break;
     default:
-      watchedState.error = err.message;
+      watchedState.error = err.response;
       break;
   }
 };
@@ -178,12 +178,12 @@ const addFeed = (watchedState, i18n) => {
   validate(watchedState.formInput.url, watchedState.formInput.urlList)
     .then((url) => {
       watchedState.formInput.urlList.push(url);
-      const response = axios.get(`${corsLink}${url}`, { timeout: 5000 });
+      const response = axios.get(`${corsLink}${url}`, { timeout: 10000 });
+
       return response;
     })
     .then((response) => {
-      console.log(response.data.status.http_code);
-      if (response.data.status.http_code !== 200) {
+      if (response.status !== 200) {
         watchedState.formInput.urlList.pop();
         const e = new Error();
         e.name = 'InvalidRssError';
