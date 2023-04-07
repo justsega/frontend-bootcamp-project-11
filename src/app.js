@@ -3,7 +3,7 @@ import _ from 'lodash';
 import i18next from 'i18next';
 import uniqid from 'uniqid';
 import watcher from './view.js';
-import { rssParser } from './rssReader.js';
+import rssParser from './rssReader.js';
 import validate from './validation.js';
 import languages from './locales/index.js';
 

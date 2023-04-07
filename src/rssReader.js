@@ -1,4 +1,4 @@
-export const rssParser = (response) => {
+const rssParser = (response) => {
   const domParser = new DOMParser();
   const parsedResponse = domParser.parseFromString(response.data.contents, 'application/xml');
   const err = parsedResponse.querySelector('parsererror');
@@ -10,3 +10,5 @@ export const rssParser = (response) => {
   }
   return parsedResponse;
 };
+
+export default rssParser;
