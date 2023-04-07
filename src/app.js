@@ -130,7 +130,7 @@ const errorHandler = (err, watchedState, i18n) => {
       watchedState.error = i18n.t('axiosErrors.errorInvalidRss');
       break;
     default:
-      watchedState.error = err.response;
+      watchedState.error = err.message;
       break;
   }
 };
