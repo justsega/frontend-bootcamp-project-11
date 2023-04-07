@@ -160,7 +160,7 @@ const updateRss = (watchedState) => {
         }
         const newTopics = diffLinks.map((link) => {
           const p = posts.find((post) => {
-            post.link === link;
+            post = post.link === link;
             return post;
           });
           return p;
