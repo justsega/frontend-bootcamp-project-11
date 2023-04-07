@@ -1,55 +1,53 @@
 import onChange from 'on-change';
-import { renderSearchingProcess, renderError, renderFeeds, renderTopics, renderSuccess, renderPostsContainer, renderModalWindowContent, renderViewedPosts } from './render.js';
+import {
+  renderSearchingProcess, renderError, renderFeeds, renderTopics, renderSuccess,
+  renderPostsContainer, renderModalWindowContent, renderViewedPosts, renderActiveFeed,
+} from './render.js';
 
-
-export default (state) => onChange(state, (path, value) => {
-
-    // Errors
-    switch (path) {
-        case 'error':
-            renderError(value);
-            break;
+export default (state, i18n) => onChange(state, (path, value) => {
+  // Errors
+  switch (path) {
+    case 'error':
+      renderError(value);
+      break;
     // Success
-        case 'success':
-            renderSuccess();
-            break;
+    case 'success':
+      renderSuccess(i18n);
+      break;
 
     // Searching
-        case 'searchingProcess':
-            renderSearchingProcess(value);
-            break;
+    case 'searchingProcess':
+      renderSearchingProcess(value);
+      break;
 
     // Show Feeds
-        case 'feedsList':
-            renderFeeds(value);
-            
-            break;
+    case 'feedsList':
+      renderFeeds(value, i18n);
+
+      break;
     // Show Topics
-        case 'topics':
-            renderPostsContainer();
-            renderTopics(value, state.shownFeed);
-            renderViewedPosts(state.openedPosts)
-            break;
+    case 'topics':
+      renderPostsContainer(i18n);
+      renderTopics(value, i18n, state.shownFeed);
+      renderViewedPosts(state.openedPosts);
+      break;
     // Show content in modal window
-        case 'currentPost':
-            console.log(value)
-            renderModalWindowContent(value);
-            break;
+    case 'currentPost':
+      console.log(value);
+      renderModalWindowContent(value);
+      break;
     // Show opened posts flag
-        case 'openedPosts':
-            renderViewedPosts(value);
-            break;
+    case 'openedPosts':
+      renderViewedPosts(value);
+      break;
     // Filter topics by feed
-        case 'shownFeed':
-            renderPostsContainer();
-            renderTopics(state.topics, value);
-            renderViewedPosts(state.openedPosts)
-            break;
-        default:
-            break;
-
-    }
-    
-
+    case 'shownFeed':
+      renderPostsContainer(i18n);
+      renderTopics(state.topics, i18n, value);
+      renderViewedPosts(state.openedPosts);
+      renderActiveFeed(value);
+      break;
+    default:
+      break;
+  }
 });
-

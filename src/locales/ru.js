@@ -1,35 +1,24 @@
 export default {
-    ru: {
-      translation: {
-        btnSelectionLanguadge: {
-          en: 'English',
-          ru: 'Русский',
-        },
-        validation: {
-          errors: {
-            errorURL: 'Ссылка должна быть валидным URL',
-            errorUniqRssUrl: 'RSS уже существует',
-            errorRequired: 'Не должно быть пустым',
-          },
-        },
-        loading: {
-          errors: {
-            errorNetWork: 'Ошибка сети',
-            errorResource: 'Ресурс не содержит валидный RSS',
-          },
-          isLoaded: 'RSS успешно загружен',
-        },
-        update: {
-          errors: {
-            errorNetWork: 'Не удалось обновить: ошибка сети',
-            errorResource: 'Не удалось обновить: ресурс не содержит валидный RSS',
-          },
-        },
-        content: {
-          feeds: 'Фиды',
-          posts: 'Посты',
-          view: 'Просмотр',
-        },
+  ru: {
+    translation: {
+      succsess: 'RSS успешно загружен',
+      axiosErrors: {
+        errorNetwork: 'Ошибка сети',
+        errorInvalidRss: 'Ресурс не содержит валидный RSS',
+      },
+      validationErrors: {
+        errorAlreadyExists: 'RSS уже существует',
+        errorEmptyInput: 'Не должно быть пустым',
+        errorInvalidUrl: 'Ссылка должна быть валидным URL',
+      },
+      parsingErrors: {
+        errorParsing: 'Ошибка парсинга',
+      },
+      ui: {
+        feeds: 'Фиды',
+        posts: 'Посты',
+        view: 'Просмотр',
       },
     },
-  };
+  },
+};
