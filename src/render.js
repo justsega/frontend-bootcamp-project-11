@@ -27,8 +27,7 @@ export const renderSearchingProcess = (value) => {
   btn.setAttribute('disabled', '');
   inputField.setAttribute('readonly', 'true');
 };
-
-export const renderFeeds = (value, i18n) => {
+export const renderFeedsContainer = (i18n) => {
   const feedsBlock = document.querySelector('.feeds');
   feedsBlock.innerHTML = '';
 
@@ -45,7 +44,9 @@ export const renderFeeds = (value, i18n) => {
   cardBody.append(title);
   feedsCard.append(cardBody);
   feedsBlock.prepend(feedsCard);
-
+};
+export const renderFeeds = (value) => {
+  const feedsCard = document.querySelector('.feeds .card');
   value.forEach((feed) => {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'border-0', 'border-end-0');

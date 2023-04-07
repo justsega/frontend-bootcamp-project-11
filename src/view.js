@@ -2,6 +2,7 @@ import onChange from 'on-change';
 import {
   renderSearchingProcess, renderError, renderFeeds, renderTopics, renderSuccess,
   renderPostsContainer, renderModalWindowContent, renderViewedPosts, renderActiveFeed,
+  renderFeedsContainer,
 } from './render.js';
 
 export default (state, i18n) => onChange(state, (path, value) => {
@@ -22,7 +23,8 @@ export default (state, i18n) => onChange(state, (path, value) => {
 
     // Show Feeds
     case 'feedsList':
-      renderFeeds(value, i18n);
+      renderFeedsContainer(i18n);
+      renderFeeds(value);
       break;
     // Show Topics
     case 'topics':
