@@ -183,7 +183,7 @@ const addFeed = (watchedState, i18n) => {
   validate(watchedState.formInput.url, watchedState.formInput.urlList)
     .then((url) => {
       watchedState.formInput.urlList.push(url);
-      const response = axios.get(`${corsLink}${url}`, { timeout: 10000 });
+      const response = axios.get(`${corsLink}${url}`, { timeout: 5000 });
 
       return response;
     })
