@@ -104,7 +104,6 @@ export const renderModalWindowContent = (value) => {
 export const renderViewedPosts = (value) => {
   if (value.length !== 0) {
     value.forEach((id) => {
-      console.log(id);
       const a = document.querySelector(`#${id} a`);
       if (a === null) {
         return;
@@ -141,7 +140,6 @@ export const renderPostsContainer = (i18n) => {
 export const renderTopics = (topics, i18n, filter = null) => {
   if (filter !== null) {
     topics = topics.filter((t) => t.feedName === filter);
-    console.log(topics);
   }
   const ul = document.querySelector('.posts ul');
   ul.innerHTML = '';

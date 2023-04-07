@@ -81,7 +81,6 @@ const showModalWindow = (watchedState) => {
         return;
       }
       watchedState.openedPosts.push(id);
-      console.log(watchedState.openedPosts);
     });
   });
   markLinks(watchedState);
@@ -95,7 +94,6 @@ const shownFeed = (watchedState) => {
     feed.addEventListener('click', (e) => {
       const parentNode = e.target.closest('li');
       const feedTitle = parentNode.querySelector('h3').textContent;
-      console.log(feedTitle);
       watchedState.shownFeed = feedTitle;
       showModalWindow(watchedState);
       markLinks(watchedState);
@@ -175,7 +173,6 @@ const updateRss = (watchedState) => {
 };
 
 const addFeed = (watchedState, i18n) => {
-  console.log(i18n);
   watchedState.searchingProcess = true;
   refreshState(watchedState);
   validate(watchedState.formInput.url, watchedState.formInput.urlList)
@@ -214,7 +211,6 @@ export default () => {
   const i18n = i18next.createInstance();
   i18n.init({
     lng: 'ru',
-    debug: true,
     resources: languages.ru,
   });
 
