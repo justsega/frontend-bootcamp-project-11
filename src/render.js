@@ -70,16 +70,12 @@ export const renderFeeds = (value, i18n) => {
 
 export const renderActiveFeed = (value) => {
   const feeds = document.querySelector('.feeds');
-  const feedsItems = document.querySelectorAll('.feeds li');
-  feedsItems.forEach((feed) => {
-    feed.classList.remove('border', 'border-primary', 'rounded-4');
-    feed.classList.add('border-0', 'border-end-0');
+  const feedsItems = feeds.querySelectorAll('li');
+  feedsItems.forEach((item) => {
+    item.classList.remove('border', 'border-primary', 'rounded-4');
+    item.classList.add('border-0', 'border-end-0');
   });
   if (value !== null) {
-    feedsItems.forEach((feed) => {
-      feed.classList.remove('border', 'border-primary', 'rounded-4');
-      feed.classList.add('border-0', 'border-end-0');
-    });
     const activeFeed = feeds.querySelector(`[feedname="${value}"]`);
     activeFeed.classList.remove('border-0', 'border-end-0');
     activeFeed.classList.add('border', 'border-primary', 'rounded-4');

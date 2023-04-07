@@ -13,11 +13,6 @@ const btn = document.querySelector('[aria-label="add"]');
 const corsLink = 'https://allorigins.hexlet.app/get?disableCache=true&url=';
 
 const feedParser = (document) => {
-  if (document.querySelector('channel title').textContent === null) {
-    const error = new Error();
-    error.name = 'ParsingError';
-    throw error;
-  }
   const feedTitle = document.querySelector('channel title').textContent;
   const feedDescription = document.querySelector('channel description').textContent;
 
@@ -25,11 +20,6 @@ const feedParser = (document) => {
 };
 
 const postsParser = (document) => {
-  if (document.querySelector('title').textContent === null) {
-    const error = new Error();
-    error.name = 'ParsingError';
-    throw error;
-  }
   const feedName = document.querySelector('title').textContent;
   const topics = [...document.querySelectorAll('item')];
   const topicsList = topics.map((topic) => {
