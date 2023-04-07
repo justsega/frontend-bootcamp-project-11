@@ -23,7 +23,6 @@ export default (state, i18n) => onChange(state, (path, value) => {
     // Show Feeds
     case 'feedsList':
       renderFeeds(value, i18n);
-
       break;
     // Show Topics
     case 'topics':
