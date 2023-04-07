@@ -4,7 +4,6 @@ export default {
       succsess: 'RSS успешно загружен',
       axiosErrors: {
         errorNetwork: 'Ошибка сети',
-        errorInvalidRss: 'Ресурс не содержит валидный RSS',
       },
       validationErrors: {
         errorAlreadyExists: 'RSS уже существует',
@@ -12,7 +11,7 @@ export default {
         errorInvalidUrl: 'Ссылка должна быть валидным URL',
       },
       parsingErrors: {
-        errorParsing: 'Ошибка парсинга',
+        errorParsing: 'Ресурс не содержит валидный RSS',
       },
       ui: {
         feeds: 'Фиды',
