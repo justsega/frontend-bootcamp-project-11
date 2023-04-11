@@ -3,4 +3,4 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/8ba5cdaf1a54e5b77b2d/maintainability)](https://codeclimate.com/github/justsega/frontend-bootcamp-project-11/maintainability)
 [![BuildCI](https://github.com/justsega/frontend-bootcamp-project-11/actions/workflows/workflow.yml/badge.svg)](https://github.com/justsega/frontend-bootcamp-project-11/actions/workflows/workflow.yml)
 
-[Демонстрация работы](https://vercel.com/justsega/frontend-bootcamp-project-11/2jhtbmNzff71EnWtD8JWBweN69c5)
+[Демонстрация работы](https://frontend-bootcamp-project-11-teal.vercel.app/)
