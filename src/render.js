@@ -41,7 +41,13 @@ export const renderFeedsContainer = (i18n) => {
   title.classList.add('card-title', 'h4');
   title.textContent = i18n.t('ui.feeds');
 
+  const description1 = document.createElement('p');
+  description1.classList.add('fs-6', 'text');
+  description1.innerHTML = 'Выберите RSS ленту.';
+
   cardBody.append(title);
+  cardBody.append(description1);
+
   feedsCard.append(cardBody);
   feedsBlock.prepend(feedsCard);
 };

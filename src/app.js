@@ -125,16 +125,15 @@ const errorHandler = (err, watchedState, i18n) => {
       watchedState.error = i18n.t('axiosErrors.errorInvalidRss');
       break;
     default:
-      watchedState.error = err.message;
       break;
   }
 };
 
-const updateRss = (watchedState) => {
+const updateRss = (watchedState, i18n) => {
   const promisies = watchedState.formInput.urlList.map((url) => {
-    const promise = axios.get(`${corsLink}${url}`)
+    const promise = axios.get(`${corsLink}${url}`, { timeout: 5000 })
       .then((response) => rssParser(response))
-      .catch((err) => errorHandler(err, watchedState));
+      .catch((err) => errorHandler(err, watchedState, i18n));
     return promise;
   });
   Promise
@@ -157,14 +156,14 @@ const updateRss = (watchedState) => {
         });
         const newTopicsWithId = setId(newTopics);
         watchedState.topics.unshift(...newTopicsWithId.flat());
-
+        watchedState.success = true;
         showModalWindow(watchedState);
         markLinks(watchedState);
         return document;
       });
     })
-    .catch((err) => errorHandler(err, watchedState));
-  setTimeout(() => updateRss(watchedState), 5000);
+    .catch((err) => errorHandler(err, watchedState, i18n));
+  setTimeout(() => updateRss(watchedState, i18n), 5000);
 };
 
 const addFeed = (watchedState, i18n) => {
@@ -195,7 +194,7 @@ const addFeed = (watchedState, i18n) => {
       showModalWindow(watchedState);
       markLinks(watchedState);
       shownFeed(watchedState);
-      updateRss(watchedState);
+      updateRss(watchedState, i18n);
     })
     .catch((err) => {
       errorHandler(err, watchedState, i18n);
