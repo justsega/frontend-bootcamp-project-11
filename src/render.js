@@ -102,8 +102,8 @@ export const renderModalWindowContent = (value) => {
   const btn = modal.querySelector('.full-article');
   const innerImg = modalBody.querySelector('img');
   if (innerImg) {
-    innerImg.setAttribute('weigth', 200);
-    innerImg.setAttribute('heigth', 200);
+    innerImg.setAttribute('width', 200);
+    innerImg.setAttribute('height', 200);
   }
   modalTitle.innerHTML = title;
   modalBody.innerHTML = description;
