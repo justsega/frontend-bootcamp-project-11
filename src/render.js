@@ -57,6 +57,7 @@ export const renderFeeds = (value) => {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'border-0', 'border-end-0');
     li.setAttribute('feedname', feed.feedTitle);
+    li.style.setProperty('cursor', 'pointer');
 
     const h3 = document.createElement('h3');
     h3.classList.add('h6', 'm-0');
