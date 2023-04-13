@@ -103,7 +103,8 @@ export const renderModalWindowContent = (value) => {
 
   const innerImg = modalBody.querySelector('img');
   if (innerImg) {
-    innerImg.setAttribute('width', 450);
+    innerImg.style.setProperty('width', 450);
+    innerImg.style.setProperty('height', 450);
   }
 
   modalTitle.innerHTML = title;
