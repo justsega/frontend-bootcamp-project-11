@@ -40,6 +40,7 @@ export const renderFeedsContainer = (i18n) => {
   const title = document.createElement('h2');
   title.classList.add('card-title', 'h4');
   title.textContent = i18n.t('ui.feeds');
+  title.style.setProperty('cursor', 'pointer');
 
   const description1 = document.createElement('p');
   description1.classList.add('fs-6', 'text');
