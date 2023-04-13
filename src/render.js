@@ -101,16 +101,16 @@ export const renderModalWindowContent = (value) => {
   const modalBody = modal.querySelector('.modal-body');
   const btn = modal.querySelector('.full-article');
 
+  modalTitle.innerHTML = title;
+  modalBody.innerHTML = description;
+
+  btn.setAttribute('href', `${link}`);
+
   const innerImg = modalBody.querySelector('img');
   if (innerImg) {
     innerImg.style.setProperty('width', 450);
     innerImg.style.setProperty('height', 450);
   }
-
-  modalTitle.innerHTML = title;
-  modalBody.innerHTML = description;
-
-  btn.setAttribute('href', `${link}`);
 };
 
 export const renderViewedPosts = (value) => {
