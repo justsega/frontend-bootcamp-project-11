@@ -107,10 +107,7 @@ export const renderModalWindowContent = (value) => {
   btn.setAttribute('href', `${link}`);
 
   const innerImg = modalBody.querySelector('img');
-  if (innerImg) {
-    innerImg.style.setProperty('width', 450);
-    innerImg.style.setProperty('height', 450);
-  }
+  console.log(innerImg);
 };
 
 export const renderViewedPosts = (value) => {
