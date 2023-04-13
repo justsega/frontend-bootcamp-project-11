@@ -61,7 +61,6 @@ export const renderFeeds = (value) => {
     const h3 = document.createElement('h3');
     h3.classList.add('h6', 'm-0');
     h3.textContent = feed.feedTitle;
-    h3.setAttribute('cursor', 'pointer');
 
     const p = document.createElement('p');
     p.classList.add('m-0', 'small', 'text-black-50');
