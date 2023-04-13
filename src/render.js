@@ -99,8 +99,8 @@ export const renderModalWindowContent = (value) => {
   const modalBody = modal.querySelector('.modal-body');
   const btn = modal.querySelector('.full-article');
 
-  modalTitle.textContent = title;
-  modalBody.textContent = description;
+  modalTitle.innerHTML = title;
+  modalBody.innerHTML = description;
   btn.setAttribute('href', `${link}`);
 };
 
