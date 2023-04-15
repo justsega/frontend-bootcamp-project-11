@@ -116,11 +116,13 @@ export const renderViewedPosts = (value) => {
   if (value.length !== 0) {
     value.forEach((id) => {
       const a = document.querySelector(`#${id} a`);
+      const button = document.querySelector(`#${id} button`);
       if (a === null) {
         return;
       }
       a.classList.replace('fw-bold', 'fw-normal');
       a.classList.add('link-secondary');
+      button.classList.replace('btn-outline-primary', 'btn-outline-secondary');
     });
   }
 };

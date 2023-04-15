@@ -44,11 +44,6 @@ const setId = (list) => {
   return list;
 };
 
-const refreshState = (watchedState) => {
-  watchedState.error = null;
-  watchedState.success = false;
-};
-
 const markLinks = (watchedState) => {
   const topicsContainer = document.querySelector('.posts');
   const hrefs = topicsContainer.querySelectorAll('a');
@@ -56,10 +51,10 @@ const markLinks = (watchedState) => {
     ref.addEventListener('click', (e) => {
       const parentNode = e.target.closest('li');
       const { id } = parentNode;
-      if (watchedState.openedPosts.includes(id)) {
+      if (watchedState.viewedPosts.includes(id)) {
         return;
       }
-      watchedState.openedPosts.push(id);
+      watchedState.viewedPosts.push(id);
     });
   });
 };
@@ -72,10 +67,10 @@ const showModalWindow = (watchedState) => {
       const parentNode = e.target.closest('li');
       const { id } = parentNode;
       watchedState.currentPost = watchedState.topics.find((t) => t.id === id);
-      if (watchedState.openedPosts.includes(id)) {
+      if (watchedState.viewedPosts.includes(id)) {
         return;
       }
-      watchedState.openedPosts.push(id);
+      watchedState.viewedPosts.push(id);
     });
   });
   markLinks(watchedState);
@@ -130,7 +125,7 @@ const errorHandler = (err, watchedState, i18n) => {
 };
 
 const updateRss = (watchedState, i18n) => {
-  const promisies = watchedState.formInput.urlList.map((url) => {
+  const promisies = watchedState.urlList.map((url) => {
     const promise = axios.get(`${corsLink}${url}`, { timeout: 5000 })
       .then((response) => rssParser(response))
       .catch((err) => errorHandler(err, watchedState, i18n));
@@ -156,29 +151,32 @@ const updateRss = (watchedState, i18n) => {
         });
         const newTopicsWithId = setId(newTopics);
         watchedState.topics.unshift(...newTopicsWithId.flat());
-        watchedState.success = true;
         showModalWindow(watchedState);
         markLinks(watchedState);
         return document;
       });
     })
     .catch((err) => errorHandler(err, watchedState, i18n));
-  setTimeout(() => updateRss(watchedState, i18n), 5000);
+};
+
+export const startUpdate = (watchedState, i18n) => {
+  setTimeout(() => {
+    updateRss(watchedState, i18n);
+    startUpdate(watchedState, i18n);
+  }, 5000);
 };
 
 const addFeed = (watchedState, i18n) => {
-  watchedState.searchingProcess = true;
-  refreshState(watchedState);
-  validate(watchedState.formInput.url, watchedState.formInput.urlList)
+  watchedState.status = 'searching';
+  validate(watchedState.formInput, watchedState.urlList)
     .then((url) => {
-      watchedState.formInput.urlList.push(url);
+      watchedState.urlList.push(url);
       const response = axios.get(`${corsLink}${url}`, { timeout: 5000 });
-
       return response;
     })
     .then((response) => {
       if (response.status !== 200) {
-        watchedState.formInput.urlList.pop();
+        watchedState.urlList.pop();
         const e = new Error();
         e.name = 'InvalidRssError';
         throw e;
@@ -189,16 +187,15 @@ const addFeed = (watchedState, i18n) => {
       setId(posts);
       watchedState.topics.unshift(...posts);
       watchedState.feedsList.unshift(feed);
-      watchedState.success = true;
-      watchedState.searchingProcess = false;
+      watchedState.status = 'success';
       showModalWindow(watchedState);
       markLinks(watchedState);
       shownFeed(watchedState);
-      updateRss(watchedState, i18n);
+      startUpdate(watchedState, i18n);
     })
     .catch((err) => {
       errorHandler(err, watchedState, i18n);
-      watchedState.searchingProcess = false;
+      watchedState.status = 'error';
     });
 };
 
@@ -210,29 +207,28 @@ export default () => {
   });
 
   const state = {
-    formInput: {
-      url: null,
-      urlList: [],
+    formInput: null,
+    urlList: [],
 
-    },
-    success: false,
+    status: null,
+    error: null,
+
+    updatingTimer: false,
+
     shownFeed: null,
     currentPost: null,
-    openedPosts: [],
-    searchingProcess: false,
+    viewedPosts: [],
+
     feedsList: [],
     topics: [],
-    error: null,
-    uiState: {
-      lng: 'smth',
-    },
+
   };
 
   const watchedState = watcher(state, i18n);
 
   btn.addEventListener('click', (e) => {
     e.preventDefault();
-    watchedState.formInput.url = inputField.value;
+    watchedState.formInput = inputField.value;
     form.reset();
     inputField.focus();
     addFeed(watchedState, i18n);
