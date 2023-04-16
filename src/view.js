@@ -1,5 +1,4 @@
 import onChange from 'on-change';
-import { startUpdate } from './app.js';
 import {
   renderSearchingProcess, renderError, renderFeeds, renderTopics, renderSuccess,
   renderPostsContainer, renderModalWindowContent, renderViewedPosts, renderActiveFeed,
@@ -7,7 +6,6 @@ import {
 } from './render.js';
 
 export default (state, i18n) => onChange(state, (path, value) => {
-  // Errors
   switch (path) {
     // Status
     case 'status':
@@ -45,10 +43,7 @@ export default (state, i18n) => onChange(state, (path, value) => {
     case 'viewedPosts':
       renderViewedPosts(value);
       break;
-    // Start updating
-    case 'updatingTimer':
-      startUpdate(state, i18n);
-      break;
+
     // Filter topics by feed
     case 'shownFeed':
       renderPostsContainer(i18n);

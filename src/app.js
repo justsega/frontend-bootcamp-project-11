@@ -131,38 +131,34 @@ const updateRss = (watchedState, i18n) => {
       .catch((err) => errorHandler(err, watchedState, i18n));
     return promise;
   });
-  Promise
-    .all(promisies)
-    .then((documents) => {
-      const document = documents.map((doc) => {
-        const posts = postsParser(doc);
-        const newPostsLinks = posts.map((p) => p.link);
-        const oldPostsLinks = watchedState.topics.map((p) => p.link);
-        const diffLinks = _.differenceWith(newPostsLinks, oldPostsLinks, _.isEqual);
-        if (diffLinks.length === 0) {
-          return null;
-        }
-        const newTopics = diffLinks.map((link) => {
-          const p = posts.find((post) => {
-            post = post.link === link;
-            return post;
-          });
-          return p;
-        });
-        const newTopicsWithId = setId(newTopics);
-        watchedState.topics.unshift(...newTopicsWithId.flat());
-        showModalWindow(watchedState);
-        markLinks(watchedState);
-        return document;
-      });
-    })
-    .catch((err) => errorHandler(err, watchedState, i18n));
-};
-
-export const startUpdate = (watchedState, i18n) => {
   setTimeout(() => {
+    Promise
+      .all(promisies)
+      .then((documents) => {
+        const document = documents.map((doc) => {
+          const posts = postsParser(doc);
+          const newPostsLinks = posts.map((p) => p.link);
+          const oldPostsLinks = watchedState.topics.map((p) => p.link);
+          const diffLinks = _.differenceWith(newPostsLinks, oldPostsLinks, _.isEqual);
+          if (diffLinks.length === 0) {
+            return null;
+          }
+          const newTopics = diffLinks.map((link) => {
+            const p = posts.find((post) => {
+              post = post.link === link;
+              return post;
+            });
+            return p;
+          });
+          const newTopicsWithId = setId(newTopics);
+          watchedState.topics.unshift(...newTopicsWithId.flat());
+          showModalWindow(watchedState);
+          markLinks(watchedState);
+          return document;
+        });
+      })
+      .catch((err) => errorHandler(err, watchedState, i18n));
     updateRss(watchedState, i18n);
-    startUpdate(watchedState, i18n);
   }, 5000);
 };
 
@@ -191,7 +187,7 @@ const addFeed = (watchedState, i18n) => {
       showModalWindow(watchedState);
       markLinks(watchedState);
       shownFeed(watchedState);
-      startUpdate(watchedState, i18n);
+      updateRss(watchedState, i18n);
     })
     .catch((err) => {
       errorHandler(err, watchedState, i18n);
@@ -212,8 +208,6 @@ export default () => {
 
     status: null,
     error: null,
-
-    updatingTimer: false,
 
     shownFeed: null,
     currentPost: null,
